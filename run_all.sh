@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+bash 1_start_and_stop_a_node_without_database-mainnet.sh
+bash 1_start_and_stop_a_node_without_database-testnet.sh
+bash 2_start_and_stop_a_node_known_database-mainnet.sh
+bash 2_start_and_stop_a_node_known_database-testnet.sh

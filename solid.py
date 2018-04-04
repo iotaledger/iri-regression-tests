@@ -25,9 +25,9 @@ def API(request,url=url):
     except:
         print url, "Timeout!"
         print '\n    ' + repr(sys.exc_info())
-        return " "
+        return ""
     if not response:
-        response = " "
+        response = ""
     return response
 
 def getNodeInfo():
@@ -51,13 +51,17 @@ solid_milestone = False
 counter = 0
 while not solid_milestone:
     node_info = getNodeInfo()
-    if node_info['latestSolidSubtangleMilestone'] != all_nines:
-        if node_info['latestSolidSubtangleMilestoneIndex'] == node_info['latestMilestoneIndex']:
-            solid_milestone = node_info['latestSolidSubtangleMilestone']
-            print "Success! node solid - solid_milestone: " + solid_milestone
-            break
-    print "waiting for node to get solid:" + str(node_info['latestSolidSubtangleMilestoneIndex']) + "/" + str(node_info['latestMilestoneIndex'])
-    time.sleep(2)
-    counter += 1
-    if counter > 30:
-        print "Error! not becoming solid!"
+    if node_info != "":
+        if node_info['latestSolidSubtangleMilestone'] != all_nines:
+            if node_info['latestSolidSubtangleMilestoneIndex'] == node_info['latestMilestoneIndex']:
+                solid_milestone = node_info['latestSolidSubtangleMilestone']
+                print "Success! node solid - solid_milestone: " + solid_milestone
+                break
+        print "waiting for node to get solid:" + str(node_info['latestSolidSubtangleMilestoneIndex']) + "/" + str(node_info['latestMilestoneIndex'])
+        time.sleep(2)
+        counter += 1
+        if counter > 30:
+            print "Error! not becoming solid!"
+    else:
+        print "waiting for API"
+        time.sleep(10)
