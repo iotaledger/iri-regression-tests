@@ -6,3 +6,4 @@ git checkout -b pullrequest FETCH_HEAD
 
 mvn package
 
+cd ..
