@@ -62,6 +62,7 @@ while not solid_milestone:
         counter += 1
         if counter > 30:
             print "Error! not becoming solid!"
+            break
     else:
         print "waiting for API"
         time.sleep(10)
