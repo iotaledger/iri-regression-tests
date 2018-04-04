@@ -1,26 +1,30 @@
 #!/bin/bash
+cp -rf target node 
 
-git clone https://github.com/iotaledger/iri.git
-cd iri 
-#todo add pr
-git fetch origin pull/{pr}/head
-git checkout -b pullrequest FETCH_HEAD
+cd node 
+#load mainnet DB
+#TODO host mainnet DB somewhere
+if [ -z "$2" ]; 
+then
+tar -xzf ../../mainnetdb.tar.gz
+else
+tar -xzf ../../testnetdb.tar.gz;
+fi
 
-mvn package
-cp -rf target nodeA 
-cp -rf target nodeB
-
-cd nodeA 
-nohup java -jar iri-1.4.2.3.jar -p 14266 --testnet -u 14266 -n "udp://localhost:14267"&
-cd ..
-
-cd nodeB 
-nohup java -jar iri-1.4.2.3.jar -p 14267 --testnet -u 14267 -n "udp://localhost:14266"&
+#TODO read version from config
+java -jar iri-$1.jar -p 14266 -u 14266 $2 &> iri.log & 
+echo $! > iri.pid
 cd ..
 
 #give time to the node to init
 #TODO instead of sleep sample API untill is up
-sleep 40
-#file path shouldn't be hardcoded. Should be cloned from git
-#install jmeter on travis docker
-/home/galrogo/apache-jmeter-4.0/bin/jmeter.sh -n -t /home/galrogo/iri-regression/Jmeter-Spammer/IRI_Basic_Sanity.jmx
+sleep 30
+python ../solid.py 14266 
+
+#stop node
+#TODO kill
+kill `cat node/iri.pid`
+wait `cat node/iri.pid`
+
+#Check log for errors
+grep -i "error" node/iri.log
