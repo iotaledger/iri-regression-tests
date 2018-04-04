@@ -5,7 +5,7 @@
 #$4 - unpack DB?
 #$5 - python script
 cd iri/
-
+rm -rf node
 cp -rf target node
 
 cd node
@@ -35,7 +35,7 @@ echo $! > iri.pid
 cd ..
 
 #give time to the node to init
-#TODO instead of sleep sample API until is up
+#TODO instead of sleep sample API until it is up
 sleep 40
 if [ -n "$5" ];
 then
@@ -50,7 +50,3 @@ wait `cat node/iri.pid`
 
 #Check log for errors
 grep -i "error" node/iri.log
-
-#clear
-echo "clear.."
-rm -rf node
