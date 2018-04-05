@@ -12,5 +12,4 @@ then PORT="14266";
 else PORT=$2;
 fi
 
-bash start_and_stop_a_node.sh $VER $PORT true false
-
+bash start_and_stop_a_node.sh $VER $PORT true false 1

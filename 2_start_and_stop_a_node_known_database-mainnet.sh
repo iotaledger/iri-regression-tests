@@ -12,5 +12,5 @@ then PORT="14266";
 else PORT=$2;
 fi
 
-bash start_and_stop_a_node.sh $VER $PORT false true ../solid.py
+bash start_and_stop_a_node.sh $VER $PORT false true 1 ../solid.py
 
