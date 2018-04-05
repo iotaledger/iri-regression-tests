@@ -12,72 +12,6 @@ url2 = "http://localhost:" + `port_2`
 
 folder = './'
 
-
-#Utils:
-all_nines = '9' * 81
-TIMEOUT = 60
-def API(request,url=url1):
-
-    stringified = json.dumps(request)
-    headers = {'content-type': 'application/json', 'X-IOTA-API-Version': '1'}
-
-    try:
-        request = urllib2.Request(url=url, data=stringified, headers=headers)
-        returnData = urllib2.urlopen(request, timeout=TIMEOUT).read()
-        response = json.loads(returnData)
-
-    except:
-        print url, "Timeout!"
-        print '\n    ' + repr(sys.exc_info())
-        return ""
-    if not response:
-        response = ""
-    return response
-
-def getNodeInfo():
-    cmd = {
-        "command": "getNodeInfo"
-    }
-    return API(cmd)
-
-def getTrytes(url, hash):
-    cmd = {
-        "command": "getTrytes",
-        "hashes" : [hash]
-    }
-    return API(cmd, url)
-
-def attachToTangle(url, trunk_tx, branch_tx, mwm, unattached_trytes):
-    cmd = {
-        "command": "attachToTangle",
-        "trunkTransaction": [trunk_tx],
-        "branchTransaction": [branch_tx],
-        "minWeightMagnitude": [mwm],
-        "trytes": [unattached_trytes]
-    }
-    return API(cmd, url)
-
-def storeTransactions(url, attached_trytes):
-    cmd = {
-        "command": "storeTransactions",
-        "trytes": [attached_trytes]
-    }
-    return API(cmd, url)
-
-def broadcastTransactions(url, attached_trytes):
-    cmd = {
-        "command": "broadcastTransactions",
-        "trytes": [attached_trytes]
-    }
-    return API(cmd, url)
-
-def findTransactions(url, tags):
-    cmd = {
-        "command": "findTransactions",
-        "tags": [tags]
-    }
-    return API(cmd, url)
-
 result = api.attachToTangle(url1, api.all_nines, api.all_nines, 14, bundle_trytes);
 if not result:
     print 'attach to tangle failed'
@@ -86,14 +20,8 @@ if not result:
 bundle_trytes = result.get('trytes')
 
 result = api.storeTransactions(url1, bundle_trytes)
-if not result:
-    print 'store transactions failed'
-    exit(-1)
 
 result = api.broadcastTransactions(url1, bundle_trytes)
-if not result:
-    print 'broadcast transactions failed'
-    exit(-1)
 
 time.sleep(1)
 
