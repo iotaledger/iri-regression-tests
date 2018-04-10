@@ -27,11 +27,11 @@ def API(request,url=url):
         response = ""
     return response
 
-def getNodeInfo():
+def getNodeInfo(url):
     cmd = {
         "command": "getNodeInfo"
     }
-    return API(cmd)
+    return API(cmd, url)
 
 def getTrytes(url, hash):
     cmd = {
