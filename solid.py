@@ -56,13 +56,15 @@ while not solid_milestone:
             if node_info['latestSolidSubtangleMilestoneIndex'] == node_info['latestMilestoneIndex']:
                 solid_milestone = node_info['latestSolidSubtangleMilestone']
                 print "Success! node solid - solid_milestone: " + solid_milestone
-                break
+                exit(0)
+
         print "waiting for node to get solid:" + str(node_info['latestSolidSubtangleMilestoneIndex']) + "/" + str(node_info['latestMilestoneIndex'])
         time.sleep(2)
         counter += 1
         if counter > 30:
             print "Error! not becoming solid!"
-            break
+            exit(-1)
+
     else:
         print "waiting for API"
         time.sleep(10)
