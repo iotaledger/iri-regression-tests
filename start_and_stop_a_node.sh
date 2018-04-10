@@ -63,4 +63,9 @@ do
 done
 
 #Check log for errors
-grep -i "error" node/iri.log
+for (( i=1; i<=$5; i++))
+do
+    node='node'$i
+    grep -i "error" $node/iri.log
+done
+
