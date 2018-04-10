@@ -31,14 +31,15 @@ do
     fi
 
     #TODO read version from config
+    cmdOpt=''
     if $3
     then
     echo "start node.. testnet on port: "$port
-    java -jar iri-$1.jar -p $port -u $port --testnet &> iri.log &
+    cmdOpt='--testnet'
     else
     echo "start node.. mainnet on port: "$port
-    java -jar iri-$1.jar -p $port -u $port &> iri.log &
     fi
+    java -jar iri-$1.jar -p $port -u $port -n 'udp://localhost:'`expr $port - 1`' udp://localhost:'`expr $port + 1` $cmdOpt &> iri.log &
     echo $! > iri.pid
     cd ..
     ((port++))
@@ -49,8 +50,9 @@ done
 sleep 40
 if [ -n "$6" ];
 then
-echo "start python script.."
-python $6 $2
+    echo "start python script.."
+    python $6 $2
+    rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
 fi
 
 #stop node
@@ -66,6 +68,11 @@ done
 for (( i=1; i<=$5; i++))
 do
     node='node'$i
-    grep -i "error" $node/iri.log
+    grep -i "error" $node/iri.log | tee $node/iri.errors
+    if [ -s $node/iri.errors ];
+    then
+        exit -1
+    fi
+
 done
 
