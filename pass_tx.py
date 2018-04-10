@@ -10,6 +10,7 @@ port_2 = port_1 + 1
 url1 = "http://localhost:" + `port_1`
 url2 = "http://localhost:" + `port_2`
 
+counter = 0
 while True:
     node_info1 = api.getNodeInfo(url1)
     node_info2 = api.getNodeInfo(url2)
@@ -18,6 +19,10 @@ while True:
     else:
         print "waiting for API"
         time.sleep(10)
+        counter += 1
+        if counter > 30:
+            print "Error! API not answering!"
+            exit(-1)
 
 result = api.attachToTangle(url1, api.all_nines, api.all_nines, 14, bundle_trytes)
 if not result:
