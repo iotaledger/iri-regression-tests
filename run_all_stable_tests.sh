@@ -2,11 +2,9 @@
 
 #default version
 if [ -z "$1" ];
-then VER="1.4.2.3";
+then VER="1.4.2.4";
 else VER=$1;
 fi
-
-exit 0
 
 bash 1_start_and_stop_a_node_without_database-mainnet.sh $1
 rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
