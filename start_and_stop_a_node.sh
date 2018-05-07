@@ -24,8 +24,8 @@ do
         if $3;
         then
         echo "copy testnet db"
-        cp -f ../testnet_files/testnetdb $node/testnetdb
-        cp -f ../testnet_files/snapshot.txt $node/snapshot.txt
+        cp -rf ../../testnet_files/testnetdb testnetdb
+        cp -f ../../testnet_files/snapshot.txt snapshot.txt
         else #NO really working
         echo "copy mainnet db"
         cp -f ../testnet_files/testnetdb $node/testnetdb
@@ -44,6 +44,7 @@ do
     else
     echo "start node.. mainnet on port: "$port
     fi
+    echo "cmdOpt ="$cmdOpt
     java -jar iri-$1.jar -p $port -u $port -t `expr $port + $5` -n 'udp://localhost:'`expr $port - 1`' udp://localhost:'`expr $port + 1` $cmdOpt &> iri.log &
     echo $! > iri.pid
     cd ..
