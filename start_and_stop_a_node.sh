@@ -12,6 +12,7 @@ cd iri/
 for (( i=1; i<=$5; i++))
 do
     node='node'$i
+    dbFolder='DB_'$1
     echo $node
     rm -rf $node
     cp -rf target $node
@@ -22,11 +23,12 @@ do
     then
         if $3;
         then
-        echo "unpack testnet DB"
-        tar -xzf ../../testnetdb.tar.gz;
-        else
-        echo "unpack mainnet DB"
-        tar -xzf ../../mainnetdb.tar.gz;
+        echo "copy testnet db"
+        cp -f ../testnet_files/testnetdb $node/testnetdb
+        cp -f ../testnet_files/snapshot.txt $node/snapshot.txt
+        else #NO really working
+        echo "copy mainnet db"
+        cp -f ../testnet_files/testnetdb $node/testnetdb
         fi
     fi
 
@@ -35,7 +37,10 @@ do
     if $3
     then
     echo "start node.. testnet on port: "$port
-    cmdOpt='--testnet'
+    if $4
+    then
+    cmdOpt=$(cat ../../testnet_files/cli_opts)
+    fi
     else
     echo "start node.. mainnet on port: "$port
     fi
