@@ -1,0 +1,1 @@
+--testnet --testnet-coordinator BTCAAFIH9CJIVIMWFMIHKFNWRTLJRKSTMRCVRE9CIP9AEDTOULVFRHQZT9QAQBZXXAZGBNMVOOKTKAXTB --testnet-no-coo-validation --milestone-start 0 --snapshot snapshot.txt
