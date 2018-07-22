@@ -37,7 +37,7 @@ result = api.broadcastTransactions(url1, bundle_trytes)
 
 time.sleep(1)
 
-result = api.findTransactions(url1, "SXAM")
+result = api.findTransactions(url2, "SXAM")
 if not result:
     print 'find transactions failed'
     exit(-1)
