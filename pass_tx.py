@@ -24,7 +24,7 @@ while True:
             print "Error! API not answering!"
             exit(-1)
 
-result = api.attachToTangle(url1, api.all_nines, api.all_nines, 14, bundle_trytes)
+result = api.attachToTangle(url1, api.all_nines, api.all_nines, 9, bundle_trytes)
 if not result:
     print 'attach to tangle failed'
     exit(-1)
