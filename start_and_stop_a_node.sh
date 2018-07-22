@@ -37,10 +37,11 @@ do
     if $3
     then
     echo "start node.. testnet on port: "$port
-    if $4
-    then
-    cmdOpt=$(cat ../../testnet_files/cli_opts)
-    fi
+    cmdOpt='--testnet'
+        if $4
+        then
+        cmdOpt=$(cat ../../testnet_files/cli_opts)
+        fi
     else
     echo "start node.. mainnet on port: "$port
     fi
