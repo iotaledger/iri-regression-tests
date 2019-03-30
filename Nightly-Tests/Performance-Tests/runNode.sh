@@ -3,14 +3,18 @@ sed 's/#.*//' requirements.txt | xargs sudo apt-get install -y
 
 echo "Starting Venv"
 python3 -m venv ./venv
-source ./venv/bin/activate
+base_dir=$(pwd)
 
-cwd=$(pwd)
+cd ./venv/bin/
+python_bin=$(pwd)
+
+source ./activate
+cd $base_dir
 cd ../
 
 echo "Installing python requirements"
 sudo pip install -e .
-cd $cwd
+cd $base_dir
 
 echo "Clearing any existing IRI implementations"
 kill $(ps aux | grep iri- | awk '{print $2}')
