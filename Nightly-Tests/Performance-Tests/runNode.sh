@@ -7,11 +7,10 @@ source ./venv/bin/activate
 
 cwd=$(pwd)
 cd ../
-pip install --upgrade pip
-cd cwd
 
 echo "Installing python requirements"
 sudo pip install -e .
+cd $cwd
 
 echo "Clearing any existing IRI implementations"
 kill $(ps aux | grep iri- | awk '{print $2}')
