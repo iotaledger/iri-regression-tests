@@ -9,6 +9,8 @@ cd ./venv/bin/
 python_bin=$(pwd)
 
 source ./activate
+which python
+which pip
 cd $base_dir
 cd ../
 
