@@ -9,12 +9,11 @@ cd ./venv/bin/
 python_bin=$(pwd)
 
 source ./activate
-which python
-which pip
 cd $base_dir
 cd ../
 
 echo "Installing python requirements"
+pip install --upgrade pip
 pip install -e .
 cd $base_dir
 
