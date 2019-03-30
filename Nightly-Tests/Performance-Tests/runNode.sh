@@ -15,7 +15,7 @@ cd $base_dir
 cd ../
 
 echo "Installing python requirements"
-sudo pip install -e .
+pip install -e .
 cd $base_dir
 
 echo "Clearing any existing IRI implementations"
