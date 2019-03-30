@@ -56,12 +56,12 @@ cd ../../
 
 sleep 5
 echo "Startup Scan Started"
-nohup python ./runScan.py -i 0.5 -n 180 -o ./StartupOutput/ &> startupScan.log &
+nohup python ./runScan.py -i 1 -n 300 -o ./StartupOutput/ &> startupScan.log &
 
-for i in {1..10}
+for i in {1..20}
     do 
-        sleep 20
-        let "a = $i * 10"
+        sleep 18
+        let "a = $i * 5"
         echo "$a%"    
     done
 
@@ -69,10 +69,10 @@ for i in {1..10}
 echo "Performance Scan Started"
 nohup python ./runScan.py -i 1 -n 300 -o ./RunningOutput/ &> runningScan.log &
 
-for i in {1..18}
+for i in {1..20}
     do 
-        sleep 20
-        let "a = $i * 100 / 18" 
+        sleep 18
+        let "a = $i * 5"
         echo "$a%"    
     done
 echo "Done Scanning. Killing node process" 
