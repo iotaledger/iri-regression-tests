@@ -4,7 +4,11 @@ sed 's/#.*//' requirements.txt | xargs sudo apt-get install -y
 echo "Starting Venv"
 python3 -m venv ./venv
 source ./venv/bin/activate
+
+cwd=$(pwd)
+cd ../
 pip install --upgrade pip
+cd cwd
 
 echo "Installing python requirements"
 sudo pip install -e .
