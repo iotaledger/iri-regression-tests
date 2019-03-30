@@ -18,7 +18,7 @@ pip install -e .
 cd $base_dir
 
 echo "Clearing any existing IRI implementations"
-kill $(ps aux | grep iri- | awk '{print $2}')
+kill -9 $(ps aux | grep iri- | awk '{print $2}')
 
 echo "Checking for IRI"
 if [ ! -d ./iri ]; then
@@ -76,7 +76,7 @@ for i in {1..18}
         echo "$a%"    
     done
 echo "Done Scanning. Killing node process" 
-kill -2 $IRI_PID
+kill -9 $IRI_PID
 
 deactivate
 
