@@ -1,91 +1,30 @@
 default_args1: &args
-  ['--testnet-coordinator',
-   'EFPNKGPCBXXXLIBYFGIGYBYTFFPIOQVNNVVWTTIYZO9NFREQGVGDQQHUUQ9CLWAEMXVDFSSMOTGAHVIBH',
-   '--mwm',
-   '3',
-   '--milestone-start',
-   '0',
-   '--testnet-no-coo-validation',
+  ['--testnet',
    'true',
-   '--testnet',
-   'true',
-   '--snapshot',
-   './snapshot.txt',
-   '--zmq-enabled',
-   'true'
-  ]
-
-default_args2: &args2
-  ['--testnet-coordinator',
-   'EFPNKGPCBXXXLIBYFGIGYBYTFFPIOQVNNVVWTTIYZO9NFREQGVGDQQHUUQ9CLWAEMXVDFSSMOTGAHVIBH',
-   '--mwm',
-   '3',
-   '--milestone-start',
-   '0',
-   '--testnet-no-coo-validation',
-   'true',
-   '--testnet',
-   'true',
-   '--snapshot',
-   './snapshot.txt',
-   '--zmq-enabled',
-   'true'
-  ]
-
-default_args3: &args3
-  ['--testnet-coordinator',
-   'EFPNKGPCBXXXLIBYFGIGYBYTFFPIOQVNNVVWTTIYZO9NFREQGVGDQQHUUQ9CLWAEMXVDFSSMOTGAHVIBH',
-   '--mwm',
-   '3',
-   '--milestone-start',
-   '0',
-   '--testnet-no-coo-validation',
-   'true',
-   '--testnet',
-   'true',
-   '--snapshot',
-   './snapshot.txt',
    '--zmq-enabled',
    'true'
   ]
 
 
-
-defaults: &db_full
-  db: https://s3.eu-central-1.amazonaws.com/iotaledger-dbfiles/dev/LS_Test_All_Files.tar
-  db_checksum: 4628789811b4ccbcc3cd898debff0e1b256a1cfdd636c7b5e1beb43fed461091
+db_synced: &db_synced
+  db: https://dbfiles.iota.org/devnet/1.5.0/db-762736.tar
+  db_checksum: 50ee1be92056256925263fa62b59128c16ed6fb1a7c34deb872d604956b1abdc
   iri_args: *args
-  neighbors: [
-    'tcp://nodeB:15600',
-    'tcp://nodeC:15600'
-  ]
+  neighbors: ['tcp://nodeB:15600']
 
-db_with_snapshot: &db_with_snapshot
-  db: https://s3.eu-central-1.amazonaws.com/iotaledger-dbfiles/dev/LS_Test_DB_and_Snapshot.tar
-  db_checksum: eabb81b0570a20e8d1c65c3d29e4b4e723de537ebca0eada536e3155d5a96972
-  iri_args: *args2
-  neighbors: [
-    'tcp://nodeA:15600',
-    'tcp://nodeC:15600'
-  ]
+db_behind: &db_behind
+  db: https://dbfiles.iota.org/devnet/1.5.0/db-686252.tar
+  db_checksum: 735dd385f9b62f562e388306638c2d930049e6070f3decbde4509fd01884e3f6
+  iri_args: *args
+  neighbors: ['tcp://nodeA:15600']
 
-db_with_ls_files: &db_with_LS_files
-  db: https://s3.eu-central-1.amazonaws.com/iotaledger-dbfiles/dev/LS_Test_LS_Files_and_Snapshot.tar
-  db_checksum: 87fdc9c37a6b98ec8623a5b07c49737681b7b7ac36252ab2e18cc75999f766b6
-  iri_args: *args3
-  neighbors: [
-    'tcp://nodeB:15600',
-    'tcp://nodeA:15600'
-  ]
 
 nodes:
   nodeA: #name
-    <<: *db_full
+    <<: *db_synced
 
   nodeB:
-    <<: *db_with_snapshot
+    <<: *db_behind
 
-  nodeC:
-    <<: *db_with_LS_files
 
 
