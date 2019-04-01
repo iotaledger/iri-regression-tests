@@ -119,7 +119,7 @@ logger.info(test.get_node_indexes())
 logger.info(test.get_node_sync_list())
 
 while True:
-    socket_poll = dict(poller.poll(10))
+    socket_poll = dict(poller.poll(10000))
     iteration += 1
     data = ('nodeA', test.get_furthest_milestone())
     now = time()
@@ -131,10 +131,9 @@ while True:
 
     sync_list = test.get_node_sync_list()
 
-
     if iteration % 10 == 0 or all(sync_list[node] is True for node in sync_list):
         logger.info("Node states: {}".format(sync_list))
-        logger.info("Node index: {}".format(data[1]))
+        logger.info("Node index: {}/{}".format(data[1], test.get_latest_milestone()))
 
     if all(sync_list[state] is True for state in sync_list):
         logger.info("Done")
