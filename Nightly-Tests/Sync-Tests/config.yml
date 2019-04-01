@@ -7,14 +7,14 @@ default_args1: &args
 
 
 db_synced: &db_synced
-  db: https://dbfiles.iota.org/devnet/1.5.0/db-762736.tar
-  db_checksum: 50ee1be92056256925263fa62b59128c16ed6fb1a7c34deb872d604956b1abdc
+  db: https://dbfiles.iota.org/devnet/1.5.0/db-536603.tgz
+  db_checksum: 0155b92adb8b4d876aa92d1b52c64159770871f813674c398e7a9ea7809b7716
   iri_args: *args
   neighbors: ['tcp://nodeB:15600']
 
 db_behind: &db_behind
-  db: https://dbfiles.iota.org/devnet/1.5.0/db-686252.tar
-  db_checksum: 735dd385f9b62f562e388306638c2d930049e6070f3decbde4509fd01884e3f6
+  db: https://dbfiles.iota.org/devnet/1.5.0/db-519866.tgz
+  db_checksum: 24d23bb91c08384a9ab43de28899dd8d25ea562eae3f02877a43a48691b9b70c
   iri_args: *args
   neighbors: ['tcp://nodeA:15600']
 
