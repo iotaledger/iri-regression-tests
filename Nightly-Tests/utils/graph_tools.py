@@ -12,15 +12,16 @@ def make_graph(num_tests, inputs, file, title, test):
     log_directory = test.get_log_directory()
 
     class_name = test.__class__.__name__
-    x_axis = []
-    for x in range(num_tests):
-        x_axis.append(x+1)
+
 
     if class_name == 'Test':
-        make_scan_graphs(x_axis, inputs, log_directory, file, title)
+        make_scan_graphs(num_tests, inputs, log_directory, file, title)
     elif class_name == 'SyncTest':
         furthest_milestone = test.get_furthest_milestone()
         sync_indexes = (furthest_milestone['node'], furthest_milestone['index'])
+
+        node = file.split('-')[0]
+        x_axis = test.get_node_index_list_timestamps()[node]
         make_sync_graphs(x_axis, inputs, log_directory, file, title, sync_indexes)
     else:
         raise ValueError('Test class "{}" is not supported'.format(class_name))
@@ -28,12 +29,16 @@ def make_graph(num_tests, inputs, file, title, test):
 
 
 
-def make_scan_graphs(x_axis, inputs, log_directory, file, title):
+def make_scan_graphs(num_tests, inputs, log_directory, file, title):
     assert 'iri' in inputs, 'Inputs must contain a list labeled "iri"'
     assert type(inputs['iri']) is list, '"iri" inputs must be in list form'
 
     y_max = 100
     y_ticks = []
+    x_axis = []
+
+    for x in range(num_tests):
+        x_axis.append(x+1)
 
     plt.plot(x_axis, inputs['iri'], label='IRI')
 
@@ -62,7 +67,8 @@ def make_sync_graphs(x_axis, inputs, log_directory, file, title, sync_indexes):
     assert len(inputs) > 1, 'Inputs must have length greater than 1'
     assert type(inputs) is list, 'Inputs must be in list form'
 
-    y_max = (sync_indexes[1] + 10)
+    y_min = (sync_indexes[0])
+    y_max = (sync_indexes[-1] + 10)
     y_ticks = []
 
     plt.plot(x_axis, inputs, label='Sync Rate')
@@ -73,7 +79,7 @@ def make_sync_graphs(x_axis, inputs, log_directory, file, title, sync_indexes):
 
     plt.yticks(y_ticks, y_ticks)
 
-    plt.ylim(0, y_max)
+    plt.ylim(y_min, y_max)
     plt.title(title)
     plt.legend()
 
