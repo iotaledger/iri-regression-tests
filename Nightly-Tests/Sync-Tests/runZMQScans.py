@@ -52,18 +52,19 @@ def get_args(args):
             if not base_output_dir.endswith("/"):
                 base_output_dir += "/"
 
+
 def scan_sockets(test, socket_list, socket_poll):
     for node in socket_list:
         socket = socket_list[node]
         if socket in socket_poll and socket_poll[socket] == zmq.POLLIN:
             data = socket.recv().split()[2]
-            test.add_index(node, int(data), (now-start))
+            test.add_index(node, int(data), time_elapsed)
 
             if int(data) == test.get_latest_milestone():
                 logger.info("NodeA Synced")
                 test.set_node_sync_status(node, True)
 
-            return node, data
+            return {'node': node, 'index': data}
 
 
 def make_graphs():
@@ -99,18 +100,19 @@ context = zmq.Context()
 sockets = {}
 
 logger.info("Generating Sockets")
+poller = zmq.Poller()
+
 for node in test.get_nodes():
     sockets[node] = context.socket(zmq.SUB)
     socket = sockets[node]
     socket.connect(test.get_zmq_address(node))
     socket.setsockopt(zmq.SUBSCRIBE, b"lmsi")
     logger.info("Created Socket {}".format(node))
-
-poller = zmq.Poller()
-
-for node in sockets:
-    socket = sockets[node]
     poller.register(socket, zmq.POLLIN)
+
+socket2 = context.socket(zmq.SUB)
+socket2.connect(test.get_zmq_address('nodeD'))
+socket2.setsockopt(zmq.SUBSCRIBE, b"rstat")
 
 logger.info("Starting Test")
 start = time()
@@ -119,25 +121,26 @@ logger.info(test.get_node_indexes())
 logger.info(test.get_node_sync_list())
 
 while True:
-    socket_poll = dict(poller.poll(10000))
     iteration += 1
-    data = ('nodeA', test.get_furthest_milestone())
-    now = time()
+    socket_poll = dict(poller.poll(5000))
+    data = test.get_furthest_milestone()
 
-    if socket_poll:
+    time_elapsed = time() - start
+
+    if len(socket_poll) != 0:
         data = scan_sockets(test, sockets, socket_poll)
-        node = data[0]
+        node = data['node']
         indexes = test.get_node_index_list(node)
 
     sync_list = test.get_node_sync_list()
 
-    if iteration % 10 == 0 or all(sync_list[node] is True for node in sync_list):
+    if iteration % 20 == 0 or all(sync_list[node] is True for node in sync_list):
         logger.info("Node states: {}".format(sync_list))
-        logger.info("Node index: {}/{}".format(data[1], test.get_latest_milestone()))
+        logger.info("{} index: {}/{}".format(data['node'], data['index'], test.get_latest_milestone()))
 
     if all(sync_list[state] is True for state in sync_list):
         logger.info("Done")
-        logger.info("Syncing took: {} seconds".format(now-start))
+        logger.info("Syncing took: {} seconds".format(time_elapsed))
         make_graphs()
 
         sys.exit()

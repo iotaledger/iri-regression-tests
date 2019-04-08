@@ -1,30 +1,46 @@
-default_args1: &args
-  ['--testnet',
+default_args: &args
+  ['--testnet-coordinator',
+   'EFPNKGPCBXXXLIBYFGIGYBYTFFPIOQVNNVVWTTIYZO9NFREQGVGDQQHUUQ9CLWAEMXVDFSSMOTGAHVIBH',
+   '--mwm',
+   '1',
+   '--milestone-start',
+   '0',
+   '--testnet-no-coo-validation',
    'true',
+   '--testnet',
+   'true',
+   '--snapshot',
+   './snapshot.txt',
    '--zmq-enabled',
    'true'
   ]
 
 
 db_synced: &db_synced
-  db: https://dbfiles.iota.org/devnet/1.5.0/db-536603.tgz
-  db_checksum: 0155b92adb8b4d876aa92d1b52c64159770871f813674c398e7a9ea7809b7716
+  db: https://s3.eu-central-1.amazonaws.com/iotaledger-dbfiles/dev/SyncTestSynced.tar.gz
+  db_checksum: 2063d3b0cc72e317cb0c328bd93a1fe0c2755d620751473bbcdaadd93368f609
   iri_args: *args
-  neighbors: ['tcp://nodeB:15600']
 
-db_behind: &db_behind
-  db: https://dbfiles.iota.org/devnet/1.5.0/db-519866.tgz
-  db_checksum: 24d23bb91c08384a9ab43de28899dd8d25ea562eae3f02877a43a48691b9b70c
+db_behind: &db_to_sync
+  db: https://s3.eu-central-1.amazonaws.com/iotaledger-dbfiles/dev/SyncTestLSBehind.tar.gz
+  db_checksum: 327f179c8426730774ccfcb5dc5b1b351a4f2a07f751843020b7ecdabca624f5
   iri_args: *args
-  neighbors: ['tcp://nodeA:15600']
 
 
 nodes:
   nodeA: #name
     <<: *db_synced
+    neighbors: ['tcp://nodeB:15600', 'tcp://nodeC:15600', 'tcp://nodeD:15600']
 
   nodeB:
-    <<: *db_behind
+    <<: *db_synced
+    neighbors: ['tcp://nodeA:15600', 'tcp://nodeC:15600', 'tcp://nodeD:15600']
 
+  nodeC:
+    <<: *db_synced
+    neighbors: ['tcp://nodeA:15600', 'tcp://nodeB:15600', 'tcp://nodeC:15600']
 
+  nodeD:
+    <<: *db_to_sync
+    neighbors: ['tcp://nodeA:15600', 'tcp://nodeB:15600', 'tcp://nodeC:15600']
 
