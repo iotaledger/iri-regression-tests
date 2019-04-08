@@ -88,13 +88,14 @@ class SyncTest:
             self.node_index_timestamps[node].append(time)
             current_index = self.get_latest_milestone()
 
-            if current_index == 0:
-                self.node_starting_indexes[node] = index
-                if index < self.furthest_milestone['index'] or self.furthest_milestone['index'] == 0:
-                    self.furthest_milestone['node'] = node
-                    self.furthest_milestone['index'] = index
-                if node == 'nodeA' and current_index == 0:
-                    self.set_latest_milestone(index)
+            if current_index == 0 and node == 'nodeA':
+                self.set_latest_milestone(index)
+
+            if index < self.furthest_milestone['index'] or self.furthest_milestone['node'] is None:
+                self.set_furthest_milestone(node, index)
+
+            if index > self.furthest_milestone['index'] and node == self.furthest_milestone['node']:
+                self.set_furthest_milestone(node, index)
 
             if self.node_indexes[node][-1] == self.get_latest_milestone():
                 self.node_synced[node] = True
@@ -102,17 +103,15 @@ class SyncTest:
         else:
             raise IndexError("{} has no stored indexes".format(node))
 
+
     def get_node_indexes(self):
         return self.node_indexes
-
-    def get_node_starting_index(self):
-        return self.node_starting_indexes
 
     def get_node_index_list(self, node):
         return self.node_indexes[node]
 
-    def get_node_index_list_timestamps(self):
-        return self.node_index_timestamps
+    def get_node_index_list_timestamps(self, node):
+        return self.node_index_timestamps[node]
 
     def get_index_list_length(self, node):
         return len(self.node_indexes[node])
@@ -125,6 +124,10 @@ class SyncTest:
 
     def set_latest_milestone(self, index):
         self.latest_milestone = index
+
+    def set_furthest_milestone(self, node, index):
+        self.furthest_milestone['node'] = node
+        self.furthest_milestone['index'] = index
 
     def get_furthest_milestone(self):
         return self.furthest_milestone

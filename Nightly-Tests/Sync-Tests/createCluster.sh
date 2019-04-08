@@ -27,7 +27,7 @@ echo "Cluster created"
 
 
 echo "Running ZMQ Tests"
-python zmqTest.py -o ./SyncOutput
+python runZMQScans.py -o ./SyncOutput
 
 echo "Tearing down cluster"
 python tiab/teardown_cluster.py -t $UUID -n $K8S_NAMESPACE

@@ -13,20 +13,18 @@ def make_graph(num_tests, inputs, file, title, test):
 
     class_name = test.__class__.__name__
 
-
     if class_name == 'Test':
         make_scan_graphs(num_tests, inputs, log_directory, file, title)
     elif class_name == 'SyncTest':
-        furthest_milestone = test.get_furthest_milestone()
-        sync_indexes = (furthest_milestone['node'], furthest_milestone['index'])
+        furthest_milestone = inputs[0]
+        latest_milestone = inputs[-1]
+        sync_indexes = (furthest_milestone, latest_milestone)
 
         node = file.split('-')[0]
-        x_axis = test.get_node_index_list_timestamps()[node]
+        x_axis = test.get_node_index_list_timestamps(node)
         make_sync_graphs(x_axis, inputs, log_directory, file, title, sync_indexes)
     else:
         raise ValueError('Test class "{}" is not supported'.format(class_name))
-
-
 
 
 def make_scan_graphs(num_tests, inputs, log_directory, file, title):
@@ -68,14 +66,13 @@ def make_sync_graphs(x_axis, inputs, log_directory, file, title, sync_indexes):
     assert type(inputs) is list, 'Inputs must be in list form'
 
     y_min = (sync_indexes[0])
-    y_max = (sync_indexes[-1] + 10)
+    y_max = (sync_indexes[1] + 10)
     y_ticks = []
 
     plt.plot(x_axis, inputs, label='Sync Rate')
 
-
     for y in range(10):
-        y_ticks.append(math.ceil(y_max/10) * (y+1))
+        y_ticks.append(math.ceil((y_max-y_min)/10) * (y+1) + y_min)
 
     plt.yticks(y_ticks, y_ticks)
 
