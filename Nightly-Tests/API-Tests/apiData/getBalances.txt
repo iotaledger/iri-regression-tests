@@ -1,0 +1,5 @@
+{
+    "command": "getBalances",
+    "addresses": ["SENDTOTHISADDRESS9999999999999999999999999999999999999999999999999999999999999999"],
+    "threshold": 100
+}
