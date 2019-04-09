@@ -135,8 +135,9 @@ while True:
     sync_list = test.get_node_sync_list()
 
     if iteration % 20 == 0 or all(sync_list[node] is True for node in sync_list):
+        logger.info("Time elapsed: {}".format(int(time_elapsed)))        
         logger.info("Node states: {}".format(sync_list))
-        logger.info("{} index: {}/{}".format(data['node'], data['index'], test.get_latest_milestone()))
+        logger.info("{} index: {}/{}\n".format(data['node'], data['index'], test.get_latest_milestone()))
 
     if all(sync_list[state] is True for state in sync_list):
         logger.info("Done")

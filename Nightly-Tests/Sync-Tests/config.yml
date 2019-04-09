@@ -18,12 +18,12 @@ default_args: &args
 
 db_synced: &db_synced
   db: https://s3.eu-central-1.amazonaws.com/iotaledger-dbfiles/dev/SyncTestSynced.tar.gz
-  db_checksum: 2063d3b0cc72e317cb0c328bd93a1fe0c2755d620751473bbcdaadd93368f609
+  db_checksum: b1731dff8badf94d820ad37b52a4c906962da31b41e63e2f3d766d6f635029c4
   iri_args: *args
 
 db_behind: &db_to_sync
   db: https://s3.eu-central-1.amazonaws.com/iotaledger-dbfiles/dev/SyncTestLSBehind.tar.gz
-  db_checksum: 327f179c8426730774ccfcb5dc5b1b351a4f2a07f751843020b7ecdabca624f5
+  db_checksum: 2063d3b0cc72e317cb0c328bd93a1fe0c2755d620751473bbcdaadd93368f609
   iri_args: *args
 
 
@@ -38,7 +38,7 @@ nodes:
 
   nodeC:
     <<: *db_synced
-    neighbors: ['tcp://nodeA:15600', 'tcp://nodeB:15600', 'tcp://nodeC:15600']
+    neighbors: ['tcp://nodeA:15600', 'tcp://nodeB:15600', 'tcp://nodeD:15600']
 
   nodeD:
     <<: *db_to_sync
