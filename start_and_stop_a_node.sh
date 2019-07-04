@@ -45,8 +45,14 @@ do
     else
     echo "start node.. mainnet on port: "$port
     fi
-    echo "cmdOpt ="$cmdOpt
-    java -jar iri-$1.jar -p $port -t `expr $port + $5` -n 'tcp://localhost:'`expr $port - 1`' tcp://localhost:'`expr $port + 1` $cmdOpt &> iri.log &
+    if (( $5 > 1 ));
+        then
+            cliOpts=$cmdOpt$(cat ../../nodeOpts$i)
+        else
+            cliOpts=$cmdOpt
+    fi
+    echo "cliOpts ="$cliOpts
+    java -jar iri-$1.jar -p $port $cliOpts &> iri.log &
     echo $! > iri.pid
     cd ..
     ((port++))
