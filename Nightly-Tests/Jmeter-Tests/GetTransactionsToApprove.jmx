@@ -33,7 +33,7 @@
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
                 <stringProp name="Argument.value">{&#xd;
 	&quot;command&quot;: &quot;getTransactionsToApprove&quot;,&#xd;
-	&quot;depth&quot;: 3&#xd;
+	&quot;depth&quot;: 15&#xd;
 }&#xd;
 &#xd;
 </stringProp>
@@ -41,7 +41,7 @@
               </elementProp>
             </collectionProp>
           </elementProp>
-          <stringProp name="HTTPSampler.domain">${__P(host,178.128.236.6)}</stringProp>
+          <stringProp name="HTTPSampler.domain">${__P(host,127.0.0.1)}</stringProp>
           <stringProp name="HTTPSampler.port">${__P(port,14265)}</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
