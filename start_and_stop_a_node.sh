@@ -49,7 +49,7 @@ do
         then
             cliOpts=$cmdOpt$(cat ../../nodeOpts$i)
         else
-            cliOpts=$cmdOpt
+            cliOpts=$cmdOpt$(cat ../../nodeOpts)
     fi
     echo "cliOpts ="$cliOpts
     java -jar iri-$1.jar -p $port $cliOpts &> iri.log &
