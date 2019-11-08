@@ -5,6 +5,9 @@ from time import time, sleep
 from iota import Iota
 import os
 import datetime
+import json
+import urllib3
+
 
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 
@@ -42,6 +45,22 @@ def get_latest_solid_milestones(test):
             index = response.get('latestMilestoneIndex')
 
         test.add_index(node, index, 0)
+
+def get_total_transactions(address):
+    headers = {
+        'content-type': 'application/json',
+        'X-IOTA-API-Version': '1'
+    }
+    
+    command = {'command': 'TotalTransactions.getTotalTransactions'}
+    command_string = json.dumps(command)
+
+    logger.info("Sending command")
+    http = urllib3.PoolManager()
+    request = http.request("POST", address, body=command_string, headers=headers)
+    data = json.loads(request.data.decode('utf-8'))
+   
+    return data['ixi']['total']
 
 
 def get_args(args):
@@ -111,14 +130,12 @@ for node in test.get_nodes():
     poller.register(socket, zmq.POLLIN)
 
 socket2 = context.socket(zmq.SUB)
-socket2.connect(test.get_zmq_address('nodeD'))
+socket2.connect(test.get_zmq_address('nodeB'))
 socket2.setsockopt(zmq.SUBSCRIBE, b"rstat")
 
 logger.info("Starting Test")
 start = time()
 iteration = 0
-logger.info(test.get_node_indexes())
-logger.info(test.get_node_sync_list())
 
 while True:
     iteration += 1
@@ -138,6 +155,7 @@ while True:
         logger.info("Time elapsed: {}".format(int(time_elapsed)))        
         logger.info("Node states: {}".format(sync_list))
         logger.info("{} index: {}/{}\n".format(data['node'], data['index'], test.get_latest_milestone()))
+        logger.info("{} / {} transactions processed".format(get_total_transactions(test.get_api_address(node)), get_total_transactions(test.get_api_address('nodeA'))))
 
     if all(sync_list[state] is True for state in sync_list):
         logger.info("Done")
