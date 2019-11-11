@@ -1,0 +1,4 @@
+{
+    "command": "getTransactionsToApprove",
+    "depth": 3
+}
