@@ -1,5 +1,5 @@
 echo "Downloading apt requirments "
-sed 's/#.*//' requirements.txt | xargs sudo apt-get install -y
+apt install -y $(tr '\n' ' ' < requirements.txt)
 
 echo "Starting Venv"
 python3 -m venv ./venv
