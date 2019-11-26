@@ -60,7 +60,7 @@ done
 
 #give time to the node to init
 #TODO instead of sleep sample API until it is up
-sleep 40
+sleep 75
 if [ -n "$6" ];
 then
     echo "start python script.."
