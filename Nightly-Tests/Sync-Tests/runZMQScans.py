@@ -36,15 +36,18 @@ def set_machine_config():
     return sync_test
 
 
-def get_latest_solid_milestones(test):
+
+def get_latest_solid_milestones(test, time_elapsed):
     for node in test.get_nodes():
         api = Iota(test.get_api_address(node))
         response = api.get_node_info()
         index = response.get('latestSolidSubtangleMilestoneIndex')
         if test.get_latest_milestone() == 0:
             index = response.get('latestMilestoneIndex')
+        logger.info("Node: {}  Index: {}".format(node, index))
+        test.add_index(node, index, time_elapsed)
 
-        test.add_index(node, index, 0)
+
 
 def get_total_transactions(address):
     headers = {
@@ -76,15 +79,20 @@ def scan_sockets(test, socket_list, socket_poll):
     for node in socket_list:
         socket = socket_list[node]
         if socket in socket_poll and socket_poll[socket] == zmq.POLLIN:
-            data = socket.recv().split()[2]
-            test.add_index(node, int(data), time_elapsed)
-
-            if int(data) == test.get_latest_milestone():
-                logger.info("NodeA Synced")
-                test.set_node_sync_status(node, True)
-
-            return {'node': node, 'index': data}
-
+            received = socket.recv().split()
+            if received[0] == "lmsi":
+                data = received[2]
+                test.add_index(node, int(data), time_elapsed)
+                if int(data) == test.get_latest_milestone():
+                    logger.info("NodeA Synced")
+                    test.set_node_sync_status(node, True)
+                return {'node': node, 'index': data}        
+             
+            elif received[0] == "tx":
+                test.add_transaction(node, received[1], time_elapsed)
+               
+            return test.get_furthest_milestone()
+            
 
 def make_graphs():
     nodes = test.get_nodes()
@@ -113,7 +121,7 @@ logging.make_log_directory(test)
 logger = logging.get_sync_logger(test)
 
 logger.info('Setting Syncing Milestone')
-get_latest_solid_milestones(test)
+get_latest_solid_milestones(test, 0)
 
 context = zmq.Context()
 sockets = {}
@@ -126,6 +134,7 @@ for node in test.get_nodes():
     socket = sockets[node]
     socket.connect(test.get_zmq_address(node))
     socket.setsockopt(zmq.SUBSCRIBE, b"lmsi")
+    socket.setsockopt(zmq.SUBSCRIBE, b"tx")
     logger.info("Created Socket {}".format(node))
     poller.register(socket, zmq.POLLIN)
 
@@ -139,8 +148,9 @@ iteration = 0
 
 while True:
     iteration += 1
-    socket_poll = dict(poller.poll(5000))
+    socket_poll = dict(poller.poll(500))
     data = test.get_furthest_milestone()
+    node = 'nodeB'
 
     time_elapsed = time() - start
 
@@ -151,11 +161,13 @@ while True:
 
     sync_list = test.get_node_sync_list()
 
-    if iteration % 20 == 0 or all(sync_list[node] is True for node in sync_list):
+    if len(test.get_transactions(node)) % 1000 == 0 or all(sync_list[node] is True for node in sync_list) or time_elapsed % 60 == 0 or iteration % 1000 == 0:
+        logger.info("")        
         logger.info("Time elapsed: {}".format(int(time_elapsed)))        
         logger.info("Node states: {}".format(sync_list))
         logger.info("{} index: {}/{}\n".format(data['node'], data['index'], test.get_latest_milestone()))
-        logger.info("{} / {} transactions processed".format(get_total_transactions(test.get_api_address(node)), get_total_transactions(test.get_api_address('nodeA'))))
+        logger.info("{} / {} transactions processed".format(len(test.get_transactions('nodeB')), get_total_transactions(test.get_api_address('nodeA'))))
+        get_latest_solid_milestones(test, time_elapsed)
 
     if all(sync_list[state] is True for state in sync_list):
         logger.info("Done")

@@ -23,6 +23,14 @@ def make_graph(num_tests, inputs, file, title, test):
         node = file.split('-')[0]
         x_axis = test.get_node_index_list_timestamps(node)
         make_sync_graphs(x_axis, inputs, log_directory, file, title, sync_indexes)
+        
+        transaction_indexes = []
+        if len(test.get_transactions(node)) > 1:
+            for i in range(len(test.get_transactions(node))):
+                transaction_indexes.append(i + 1)
+           
+            sync_indexes = (0, transaction_indexes[-1])
+            make_sync_graphs(test.get_transactions_timestamps(node), transaction_indexes, log_directory, '{}-Transaction-Sync.png'.format(node), 'Transactions Processed', sync_indexes) 
     else:
         raise ValueError('Test class "{}" is not supported'.format(class_name))
 
@@ -82,3 +90,5 @@ def make_sync_graphs(x_axis, inputs, log_directory, file, title, sync_indexes):
 
     plt.savefig(log_directory + file)
     plt.clf()
+
+

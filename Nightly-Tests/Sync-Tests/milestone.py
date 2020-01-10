@@ -23,6 +23,7 @@ def int_to_trytes(int_input, length):
 
 yaml_path = './output.yml'
 
+
 print(yaml_path)
 stream = open(yaml_path,'r')
 print("Got the stream")
@@ -38,16 +39,12 @@ for key in keys:
 host = yaml_file['nodes']['nodeA']['host']
 port = yaml_file['nodes']['nodeA']['ports']['api']
 
-host = 'localhost'
-port = 14265
-
-
 print(host)
 print(port)
 api = Iota('http://{}:{}'.format(host, port))
 
 txn = ProposedTransaction(
-address = Address('EFPNKGPCBXXXLIBYFGIGYBYTFFPIOQVNNVVWTTIYZO9NFREQGVGDQQHUUQ9CLWAEMXVDFSSMOTGAHVIBH'),
+address = Address('KSAFREMKHHYHSXNLGZPFVHANVHVMKWSGEAHGTXZCSQMXTCZXOGBLVPCWFKVAEQYDJMQALKZRKOTWLGBSC'),
 value = 0
 )
 

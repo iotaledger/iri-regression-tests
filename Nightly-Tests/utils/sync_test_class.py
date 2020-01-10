@@ -16,6 +16,9 @@ class SyncTest:
     node_indexes = {}
     node_synced = {}
 
+    transactions = {}
+    transactions_timestamps = {}
+
     def __init__(self, nodes):
         # Nodes in cluster, pulled from output.yml
         self.set_nodes(nodes)
@@ -47,6 +50,8 @@ class SyncTest:
         for node in self.nodes:
             self.node_indexes[node] = []
             self.node_index_timestamps[node] = []
+            self.transactions[node] = []
+            self.transactions_timestamps[node] = []
             self.node_synced[node] = False
 
 
@@ -132,7 +137,16 @@ class SyncTest:
     def get_furthest_milestone(self):
         return self.furthest_milestone
 
+    def get_transactions(self, node):
+        return self.transactions[node]
 
+    def get_transactions_timestamps(self, node):
+        return self.transactions_timestamps[node]
+
+    def add_transaction(self, node, tx, time):
+        if node in self.node_indexes:
+            self.transactions[node].append(tx)
+            self.transactions_timestamps[node].append(time)
 
 
 
