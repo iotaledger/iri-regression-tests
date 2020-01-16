@@ -1,8 +1,7 @@
 from os import environ
 
 import matplotlib
-if 'DISPLAY' not in environ:
-    matplotlib.use('Agg')
+matplotlib.use('agg')
 
 import matplotlib.pyplot as plt
 import math

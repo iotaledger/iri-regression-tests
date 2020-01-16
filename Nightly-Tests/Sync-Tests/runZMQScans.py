@@ -1,7 +1,7 @@
 from yaml import load, Loader
 import zmq
 import sys
-from time import time, sleep
+from time import time
 from iota import Iota
 import os
 import datetime
@@ -166,7 +166,7 @@ while True:
         logger.info("Time elapsed: {}".format(int(time_elapsed)))        
         logger.info("Node states: {}".format(sync_list))
         logger.info("{} index: {}/{}\n".format(data['node'], data['index'], test.get_latest_milestone()))
-        logger.info("{} / {} transactions processed".format(len(test.get_transactions('nodeB')), get_total_transactions(test.get_api_address('nodeA'))))
+        logger.info("{} / {} transactions processed".format(len(test.get_transactions('nodeC')), get_total_transactions(test.get_api_address('nodeA'))))
         get_latest_solid_milestones(test, time_elapsed)
 
     if all(sync_list[state] is True for state in sync_list):
