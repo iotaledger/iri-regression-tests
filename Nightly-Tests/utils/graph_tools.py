@@ -9,7 +9,6 @@ import math
 
 def make_graph(num_tests, inputs, file, title, test):
     log_directory = test.get_log_directory()
-
     class_name = test.__class__.__name__
 
     if class_name == 'Test':
@@ -89,5 +88,3 @@ def make_sync_graphs(x_axis, inputs, log_directory, file, title, sync_indexes):
 
     plt.savefig(log_directory + file)
     plt.clf()
-
-
