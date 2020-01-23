@@ -17,7 +17,7 @@ fi
 set -x
 
 echo "Downloading apt requirments "
-sed 's/#.*//' requirements.txt | xargs sudo apt-get install -y
+sed 's/#.*//' requirements.txt | xargs apt-get install -y
 
 UUID="$(uuidgen)"
 K8S_NAMESPACE=$(kubectl config get-contexts $(kubectl config current-context) | tail -n+2 | awk '{print $5}')
