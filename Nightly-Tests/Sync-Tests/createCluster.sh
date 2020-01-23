@@ -1,3 +1,4 @@
+set -x
 
 trap ctrl_c INT
 
