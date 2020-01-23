@@ -28,7 +28,7 @@ if [ ! -d tiab ]; then
   git clone --depth 1 https://github.com/iotaledger/tiab tiab
 fi
  
-virtualenv -p python3.6 venv
+virtualenv -p python3 venv
 source ./venv/bin/activate 
 
 cd tiab
