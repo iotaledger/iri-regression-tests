@@ -1,3 +1,4 @@
+set -x
 
 trap ctrl_c INT
 
@@ -21,7 +22,7 @@ fi
 set -x
 
 echo "Downloading apt requirments "
-sed 's/#.*//' requirements.txt | xargs sudo apt-get install -y
+sed 's/#.*//' requirements.txt | xargs apt-get install -y
 
 UUID="$(uuidgen)"
 K8S_NAMESPACE=$(kubectl config get-contexts $(kubectl config current-context) | tail -n+2 | awk '{print $5}')
@@ -33,7 +34,7 @@ if [ ! -d tiab ]; then
   git clone --depth 1 https://github.com/iotaledger/tiab tiab
 fi
  
-virtualenv -p python3 venv
+virtualenv -p python2 venv
 source ./venv/bin/activate 
 
 cd tiab
