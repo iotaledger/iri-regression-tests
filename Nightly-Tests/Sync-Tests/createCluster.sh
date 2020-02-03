@@ -77,3 +77,5 @@ timeout 10 tiab/teardown_cluster.py -t $UUID -n $K8S_NAMESPACE
 
 echo "Deactivating"
 deactivate
+
+exit $ERROR
