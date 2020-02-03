@@ -49,32 +49,38 @@ pip install --upgrade pip
 pip install -e .
 cd $base_dir
 
+ERROR=0
+
 python tiab/create_cluster.py -i $IMAGE -t $UUID -n $K8S_NAMESPACE -c config.yml -o output.yml -x $base_dir -e "apt update && apt install unzip && wget http://search.maven.org/remotecontent\?filepath\=org/jacoco/jacoco/0.8.4/jacoco-0.8.4.zip -O jacoco.zip && mkdir /opt/jacoco && unzip jacoco.zip -d /opt/jacoco" -d
 
 if [ $? -ne 0 ]; then
     ERROR=1
     python <<EOF
 import yaml
-for (key,value) in yaml.load(open('$machine_dir/output.yml'))['nodes'].iteritems():
+for (key,value) in yaml.load(open('output.yml'))['nodes'].iteritems():
   if value['status'] == 'Error':
     print(value['log'])
 EOF
 fi
 
-sleep 20
-echo "Sending milestone"
-python milestone.py -i 2006
+if [ $ERROR -eq 0 ]; then
+  sleep 20
+  echo "Sending milestone"
+  python milestone.py -i 2006
 
-echo "Running ZMQ Tests"
-python runZMQScans.py -o ./SyncOutput
+  echo "Running ZMQ Tests"
+  python runZMQScans.py -o ./SyncOutput
 
-for pod in $(kubectl get pods -o jsonpath='{.items[*].metadata.name}');do
-  echo $pod
-  kubectl logs $pod > ./SyncOutput/$DATE/$(kubectl get pod $pod -o jsonpath='{.metadata.labels.nodenum}').log
-done
+  for pod in $(kubectl get pods -o jsonpath='{.items[*].metadata.name}');do
+    echo $pod
+    kubectl logs $pod > ./SyncOutput/$DATE/$(kubectl get pod $pod -o jsonpath='{.metadata.labels.nodenum}').log
+  done
+fi
 
 echo "Tearing down cluster" 
 timeout 10 tiab/teardown_cluster.py -t $UUID -n $K8S_NAMESPACE
 
 echo "Deactivating"
 deactivate
+
+exit $ERROR
