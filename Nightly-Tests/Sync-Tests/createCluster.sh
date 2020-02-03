@@ -4,6 +4,11 @@ trap ctrl_c INT
 
 function ctrl_c() {
     echo -e "\nExit called by user"
+    for pod in $(kubectl get pods -o jsonpath='{.items[*].metadata.name}');do
+        echo "Pulling node logs..." 
+        kubectl logs $pod > ./SyncOutput/$DATE/$(kubectl get pod $pod -o jsonpath='{.metadata.labels.nodenum}').log
+    done
+
     timeout 10 tiab/teardown_cluster.py -t $UUID -n $K8S_NAMESPACE
     deactivate
     exit
@@ -61,7 +66,7 @@ fi
 if [ $ERROR -eq 0 ]; then
   sleep 20
   echo "Sending milestone"
-  python milestone.py -i 2005
+  python milestone.py -i 2006
 
   echo "Running ZMQ Tests"
   python runZMQScans.py -o ./SyncOutput

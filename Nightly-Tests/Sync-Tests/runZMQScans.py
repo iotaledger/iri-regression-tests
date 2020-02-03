@@ -44,12 +44,14 @@ def get_latest_solid_milestones(test, time_elapsed):
         index = response.get('latestSolidSubtangleMilestoneIndex')
         if test.get_latest_milestone() == 0:
             index = response.get('latestMilestoneIndex')
+            if node == 'nodeC':
+                index = 0
         logger.info("Node: {}  Index: {}".format(node, index))
         test.add_index(node, index, time_elapsed)
 
 
 
-def get_total_transactions(address):
+def get_total_transactions(test, node):
     headers = {
         'content-type': 'application/json',
         'X-IOTA-API-Version': '1'
@@ -60,10 +62,14 @@ def get_total_transactions(address):
 
     logger.info("Sending command")
     http = urllib3.PoolManager()
-    request = http.request("POST", address, body=command_string, headers=headers)
+    request = http.request("POST", test.get_api_address(node), body=command_string, headers=headers)
     data = json.loads(request.data.decode('utf-8'))
-   
-    return data['ixi']['total']
+    total = data['ixi']['total']
+    if total > test.get_num_transactions(node):
+        logger.info("Filling {}".format(total - test.get_num_transactions(node)))
+        test.set_num_transactions(node, total, time_elapsed)    
+
+    return total
 
 
 def get_args(args):
@@ -84,11 +90,11 @@ def scan_sockets(test, socket_list, socket_poll):
                 data = received[2]
                 test.add_index(node, int(data), time_elapsed)
                 if int(data) == test.get_latest_milestone():
-                    logger.info("NodeA Synced")
+                    logger.info("{} Synced".format(node))
                     test.set_node_sync_status(node, True)
                 return {'node': node, 'index': data}        
              
-            elif received[0] == "tx":
+            elif received[0] == "tx" or received[0] == b"tx":
                 test.add_transaction(node, received[1], time_elapsed)
                
             return test.get_furthest_milestone()
@@ -119,6 +125,7 @@ test.set_log_directory(base_output_dir + datetime.datetime.now().date().__str__(
 logging.make_log_directory(test)
 
 logger = logging.get_sync_logger(test)
+file_logger = logging.get_raw_logger(test)
 
 logger.info('Setting Syncing Milestone')
 get_latest_solid_milestones(test, 0)
@@ -135,12 +142,8 @@ for node in test.get_nodes():
     socket.connect(test.get_zmq_address(node))
     socket.setsockopt(zmq.SUBSCRIBE, b"lmsi")
     socket.setsockopt(zmq.SUBSCRIBE, b"tx")
-    logger.info("Created Socket {}".format(node))
+    logger.info("Created Socket {} on {}".format(node, test.get_zmq_address(node)))
     poller.register(socket, zmq.POLLIN)
-
-socket2 = context.socket(zmq.SUB)
-socket2.connect(test.get_zmq_address('nodeB'))
-socket2.setsockopt(zmq.SUBSCRIBE, b"rstat")
 
 logger.info("Starting Test")
 start = time()
@@ -150,10 +153,9 @@ while True:
     iteration += 1
     socket_poll = dict(poller.poll(500))
     data = test.get_furthest_milestone()
-    node = 'nodeB'
+    node = 'nodeC'
 
     time_elapsed = time() - start
-
     if len(socket_poll) != 0:
         data = scan_sockets(test, sockets, socket_poll)
         node = data['node']
@@ -161,18 +163,21 @@ while True:
 
     sync_list = test.get_node_sync_list()
 
-    if len(test.get_transactions(node)) % 1000 == 0 or all(sync_list[node] is True for node in sync_list) or time_elapsed % 60 == 0 or iteration % 1000 == 0:
+    if len(test.get_transactions(node)) % 1000 == 0 or all(sync_list[node] is True for node in sync_list) or time_elapsed % 60 < 1 or iteration % 1000 == 0:
         logger.info("")        
         logger.info("Time elapsed: {}".format(int(time_elapsed)))        
         logger.info("Node states: {}".format(sync_list))
         logger.info("{} index: {}/{}\n".format(data['node'], data['index'], test.get_latest_milestone()))
-        logger.info("{} / {} transactions processed".format(len(test.get_transactions('nodeC')), get_total_transactions(test.get_api_address('nodeA'))))
+        logger.info("{} / {} transactions processed".format(get_total_transactions(test, 'nodeC'), get_total_transactions(test,'nodeA')))
         get_latest_solid_milestones(test, time_elapsed)
 
     if all(sync_list[state] is True for state in sync_list):
         logger.info("Done")
+        logger.info(sync_list)
         logger.info("Syncing took: {} seconds".format(time_elapsed))
         make_graphs()
+
+        file_logger.info("nodeC\nindexes: \n{}\nindex timestamps: \n{}\ntransactions arrival timestamps: \n{}\n".format(test.get_node_index_list('nodeC'), test.get_node_index_list_timestamps('nodeC'), test.get_transactions_timestamps('nodeC')))
 
         sys.exit()
 

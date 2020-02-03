@@ -18,6 +18,8 @@ class SyncTest:
 
     transactions = {}
     transactions_timestamps = {}
+    
+    num_transactions = {}
 
     def __init__(self, nodes):
         # Nodes in cluster, pulled from output.yml
@@ -51,6 +53,7 @@ class SyncTest:
             self.node_indexes[node] = []
             self.node_index_timestamps[node] = []
             self.transactions[node] = []
+            self.num_transactions[node] = 0
             self.transactions_timestamps[node] = []
             self.node_synced[node] = False
 
@@ -147,7 +150,19 @@ class SyncTest:
         if node in self.node_indexes:
             self.transactions[node].append(tx)
             self.transactions_timestamps[node].append(time)
+            self.num_transactions[node] += 1
 
+    def get_num_transactions(self, node):
+        return self.num_transactions[node]
+
+    def set_num_transactions(self, node, num_transactions, time):
+        if self.num_transactions[node] < num_transactions:
+            self.transactions_timestamps[node].append(time)
+            self.num_transactions[node] = num_transactions
+            for x in range(num_transactions - len(self.transactions[node])):
+                self.transactions[node].append('N/A')
+            for y in range(num_transactions - len(self.transactions_timestamps[node])):
+                self.transactions_timestamps[node].append(time)
 
 
     def get_log_directory(self):

@@ -16,7 +16,11 @@ default_args: &args
    '--remote-limit-api',
    '""',
    '--zmq-enable-tcp',
-   'true'
+   'true',
+   '--zmq-port',
+   '5566',
+   '--local-snapshots-enabled',
+   'false'
   ]
 
 default_ixi: &ixi
