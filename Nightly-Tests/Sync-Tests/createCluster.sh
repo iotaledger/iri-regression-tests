@@ -50,7 +50,7 @@ if [ $? -ne 0 ]; then
     ERROR=1
     python <<EOF
 import yaml
-for (key,value) in yaml.load(open('$machine_dir/output.yml'))['nodes'].iteritems():
+for (key,value) in yaml.load(open('output.yml'))['nodes'].iteritems():
   if value['status'] == 'Error':
     print(value['log'])
 EOF
