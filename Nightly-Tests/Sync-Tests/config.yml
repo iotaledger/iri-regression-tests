@@ -26,7 +26,7 @@ java_options: -agentlib:jdwp=transport=dt_socket,server=y,address=8000,suspend=n
 
 defaults: &db_full
   db: https://s3.eu-central-1.amazonaws.com/iotaledger-dbfiles/dev/SyncTestsDbComplete.tar
-  db_checksum: c1c9862786f5e97bb2ad5013f15179afe41a5602699eb3f4e05a94a8f839b98e
+  db_checksum: 12f8ae2dda157097e8929ee1ef26bf5b4f5b0f93d5b49f966bbb19afd6245e88
   iri_args: *args
   ixis: *ixi
 
