@@ -27,7 +27,7 @@ sed 's/#.*//' requirements.txt | xargs apt-get install -y
 UUID="$(uuidgen)"
 K8S_NAMESPACE=$(kubectl config get-contexts $(kubectl config current-context) | tail -n+2 | awk '{print $5}')
 base_dir=$(pwd)
-IMAGE=$1
+IMAGE=${SYNC_IMAGE:-"iotacafe/iri-dev"}
 DATE=$(date '+%Y-%m-%d')
 
 if [ ! -d tiab ]; then
