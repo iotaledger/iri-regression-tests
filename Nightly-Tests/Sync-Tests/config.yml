@@ -1,0 +1,61 @@
+default_args: &args
+  ['--testnet-coordinator',
+   'KSAFREMKHHYHSXNLGZPFVHANVHVMKWSGEAHGTXZCSQMXTCZXOGBLVPCWFKVAEQYDJMQALKZRKOTWLGBSC',
+   '--mwm',
+   '1',
+   '--milestone-start',
+   '0',
+   '--testnet-no-coo-validation',
+   'true',
+   '--testnet',
+   'true',
+   '--snapshot',
+   './snapshot.txt',
+   '--remote',
+   'true',
+   '--remote-limit-api',
+   '""',
+   '--zmq-enable-tcp',
+   'true',
+   '--zmq-port',
+   '5566',
+   '--local-snapshots-enabled',
+   'false'
+  ]
+
+default_ixi: &ixi
+  ['IXI/TotalTransactions.ixi']
+
+java_options: -agentlib:jdwp=transport=dt_socket,server=y,address=8000,suspend=n -javaagent:/opt/jacoco/lib/jacocoagent.jar=destfile=/iri/jacoco.exec,output=file,append=true,dumponexit=true
+
+defaults: &db_full
+  db: https://s3.eu-central-1.amazonaws.com/iotaledger-dbfiles/dev/SyncTestsDbComplete.tar
+  db_checksum: 12f8ae2dda157097e8929ee1ef26bf5b4f5b0f93d5b49f966bbb19afd6245e88
+  iri_args: *args
+  ixis: *ixi
+
+db_empty: &db_empty
+  db: https://s3.eu-central-1.amazonaws.com/iotaledger-dbfiles/dev/EmptyDB.tar
+  db_checksum: f453e80b82ad5abd25102833f03b39379667fada962ee376a7f629a027f83a88
+  iri_args: *args
+  ixis: *ixi
+
+nodes:
+  nodeA: #name
+    <<: *db_full
+    neighbors: 
+      - tcp://nodeB:15600
+      - tcp://nodeC:15600
+
+  nodeB:
+    <<: *db_full
+    neighbors: 
+      - tcp://nodeA:15600
+      - tcp://nodeC:15600
+
+  nodeC:
+    <<: *db_empty
+    neighbors: 
+      - tcp://nodeA:15600
+      - tcp://nodeB:15600
+

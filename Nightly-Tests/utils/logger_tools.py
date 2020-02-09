@@ -21,8 +21,18 @@ def get_raw_logger(test):
     return raw_logger
 
 
+def get_sync_logger(test):
+    log_file = test.log_directory + "sync.log"
+    logging.basicConfig(level=logging.INFO)
+    handler = logging.FileHandler(log_file)
+    sync_logger = logging.getLogger("Sync")
+    sync_logger.addHandler(handler)
+    return sync_logger
+
+
 def make_log_directory(test):
     directories = [test.get_base_directory(), test.get_log_directory()]
+
     for directory in directories:
         if os.path.exists(directory):
             if directory == test.get_base_directory():

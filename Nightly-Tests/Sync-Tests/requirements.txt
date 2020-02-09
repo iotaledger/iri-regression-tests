@@ -1,0 +1,6 @@
+virtualenv
+python
+python-pip
+python-dev
+python-tk
+build-essential
