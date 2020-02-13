@@ -1,6 +1,6 @@
 # iri-regression
 
-This is a repository that includes all kind of regression tests that we use for IRI. The files in the roof folder are legacy tests used by Travis. We are still running them because they cathc errors.
+This is a repository that includes all kind of regression tests that we use for IRI. The files in the roof folder are legacy tests used by Travis. We are still running them because they catch errors.
 
 ### In order to run travis locally
 1. Clone the repository
