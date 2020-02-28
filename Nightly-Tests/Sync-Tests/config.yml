@@ -40,22 +40,37 @@ db_empty: &db_empty
   iri_args: *args
   ixis: *ixi
 
+db_local_snapshot: &db_local_snapshot
+  db: https://s3.eu-central-1.amazonaws.com/iotaledger-dbfiles/dev/SyncTestsLocalSnapshotDb.tar
+  db_checksum: a46ddb2afa422ec95b66ebe8a38000c539ce16f92cf360d45ef82bb5fd8ff6c2
+  iri_args: *args
+  ixis: *ixi
+
 nodes:
   nodeA: #name
     <<: *db_full
     neighbors: 
       - tcp://nodeB:15600
       - tcp://nodeC:15600
+      - tcp://nodeD:15600
 
   nodeB:
     <<: *db_full
     neighbors: 
       - tcp://nodeA:15600
       - tcp://nodeC:15600
+      - tcp://nodeD:15600
 
   nodeC:
-    <<: *db_empty
+    <<: *db_local_snapshot
     neighbors: 
       - tcp://nodeA:15600
       - tcp://nodeB:15600
+      - tcp://nodeD:15600
 
+  nodeD:
+    <<: *db_empty
+    neighbors:
+      - tcp://nodeA:15600
+      - tcp://nodeB:15600
+      - tcp://nodeC:15600
