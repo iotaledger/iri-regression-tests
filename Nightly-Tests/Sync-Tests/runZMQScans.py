@@ -103,7 +103,7 @@ def scan_sockets(test, socket_list, socket_poll):
 def make_graphs():
     nodes = test.get_nodes()
     for node in nodes:
-        if test.get_index_list_length(node) > 1:
+        if test.get_index_list_length(node) > 2:
             graphing.make_graph(num_tests=test.get_index_list_length(node),
                                 inputs=test.get_node_index_list(node),
                                 file='{}-Sync.png'.format(node),
