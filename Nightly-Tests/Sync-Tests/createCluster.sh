@@ -79,6 +79,8 @@ fi
 
 echo "Tearing down cluster" 
 timeout 10 tiab/teardown_cluster.py -t $UUID -n $K8S_NAMESPACE
+kubectl delete pods --all
+kubectl delete services --all
 
 echo "Deactivating"
 deactivate

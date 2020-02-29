@@ -18,9 +18,7 @@ default_args: &args
    '--zmq-enable-tcp',
    'true',
    '--zmq-port',
-   '5566',
-   '--local-snapshots-enabled',
-   'false'
+   '5566'
   ]
 
 default_ixi: &ixi
@@ -42,7 +40,7 @@ db_empty: &db_empty
 
 db_local_snapshot: &db_local_snapshot
   db: https://s3.eu-central-1.amazonaws.com/iotaledger-dbfiles/dev/SyncTestsLocalSnapshotDb.tar
-  db_checksum: a46ddb2afa422ec95b66ebe8a38000c539ce16f92cf360d45ef82bb5fd8ff6c2
+  db_checksum: 4c160bb790a38f40833e44ae278b1b2422fe37c629c8b5a5091856fc99072ead
   iri_args: *args
   ixis: *ixi
 
@@ -66,11 +64,9 @@ nodes:
     neighbors: 
       - tcp://nodeA:15600
       - tcp://nodeB:15600
-      - tcp://nodeD:15600
 
   nodeD:
     <<: *db_empty
     neighbors:
       - tcp://nodeA:15600
       - tcp://nodeB:15600
-      - tcp://nodeC:15600
