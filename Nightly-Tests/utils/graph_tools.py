@@ -84,6 +84,8 @@ def make_sync_graphs(x_axis, inputs, log_directory, file, title, sync_indexes):
 
     plt.ylim(y_min, y_max)
     plt.title(title)
+    plt.xlabel("Time (s)")
+    plt.ylabel("Tx's Received")
     plt.legend()
 
     plt.savefig(log_directory + file)

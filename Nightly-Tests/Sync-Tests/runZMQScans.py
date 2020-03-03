@@ -44,7 +44,7 @@ def get_latest_solid_milestones(test, time_elapsed):
         index = response.get('latestSolidSubtangleMilestoneIndex')
         if test.get_latest_milestone() == 0:
             index = response.get('latestMilestoneIndex')
-            if node == 'nodeC':
+            if node == 'nodeD':
                 index = 0
         logger.info("Node: {}  Index: {}".format(node, index))
         test.add_index(node, index, time_elapsed)
@@ -103,7 +103,7 @@ def scan_sockets(test, socket_list, socket_poll):
 def make_graphs():
     nodes = test.get_nodes()
     for node in nodes:
-        if test.get_index_list_length(node) > 1:
+        if test.get_index_list_length(node) > 2:
             graphing.make_graph(num_tests=test.get_index_list_length(node),
                                 inputs=test.get_node_index_list(node),
                                 file='{}-Sync.png'.format(node),
@@ -153,7 +153,7 @@ while True:
     iteration += 1
     socket_poll = dict(poller.poll(500))
     data = test.get_furthest_milestone()
-    node = 'nodeC'
+    node = 'nodeD'
 
     time_elapsed = time() - start
     if len(socket_poll) != 0:
@@ -168,7 +168,7 @@ while True:
         logger.info("Time elapsed: {}".format(int(time_elapsed)))        
         logger.info("Node states: {}".format(sync_list))
         logger.info("{} index: {}/{}\n".format(data['node'], data['index'], test.get_latest_milestone()))
-        logger.info("{} / {} transactions processed".format(get_total_transactions(test, 'nodeC'), get_total_transactions(test,'nodeA')))
+        logger.info("{} / {} transactions processed".format(get_total_transactions(test, 'nodeD'), get_total_transactions(test,'nodeA')))
         get_latest_solid_milestones(test, time_elapsed)
 
     if all(sync_list[state] is True for state in sync_list):
@@ -177,7 +177,7 @@ while True:
         logger.info("Syncing took: {} seconds".format(time_elapsed))
         make_graphs()
 
-        file_logger.info("nodeC\nindexes: \n{}\nindex timestamps: \n{}\ntransactions arrival timestamps: \n{}\n".format(test.get_node_index_list('nodeC'), test.get_node_index_list_timestamps('nodeC'), test.get_transactions_timestamps('nodeC')))
+        file_logger.info("nodeD\nindexes: \n{}\nindex timestamps: \n{}\ntransactions arrival timestamps: \n{}\n".format(test.get_node_index_list('nodeD'), test.get_node_index_list_timestamps('nodeD'), test.get_transactions_timestamps('nodeD')))
 
         sys.exit()
 
