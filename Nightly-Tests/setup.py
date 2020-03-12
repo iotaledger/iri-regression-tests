@@ -9,7 +9,7 @@ setup(
     description='Nightly Tests for IRI',
     install_requires=[
         "PyOTA == 2.0.7",
-        "psutil == 5.6.1",
+        "psutil == 5.6.6",
         "matplotlib == 2.2.4",
         "pyzmq == 18.0.1",
         "pyYAML == 5.1.2"
