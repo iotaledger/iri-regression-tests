@@ -12,6 +12,6 @@ setup(
         "psutil == 5.6.1",
         "matplotlib == 2.2.4",
         "pyzmq == 18.0.1",
-        "pyYAML == 5.1.2"
+        "pyYAML == 5.4"
     ],
 )
